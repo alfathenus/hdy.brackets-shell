@@ -1,5 +1,5 @@
 .hdy-brackets-shell {
-    padding-bottom: 30px;
+    padding-bottom: 45px;
 }
 
 .hdy-command-groups {
@@ -8,6 +8,7 @@
 }
 
 .hdy-command-result pre {
+    display: inline;
     border-width: 0;
     border-style: none;
     border-color: transparent;
@@ -49,4 +50,14 @@ div:focus {
 
 .hdy-shell-icon-on {
     background: url(../images/hdy.brackets.shell.toolbar.on.png);
+}
+
+.hdy-brackets-shell .mainToolbar {
+    height: 26px;
+}
+
+.hdy-brackets-shell .shell-right-icons {
+    position:absolute;
+    right: 40px;
+    top: 6px;
 }

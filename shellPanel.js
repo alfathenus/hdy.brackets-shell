@@ -140,7 +140,7 @@ define(function (require, exports, module) {
         _addShellOutput(data, 'hdy-error');
     });
 
-    $(ShellDomain).on("exit", function(evt, dir) {
+    $(ShellDomain).on("close", function(evt, dir) {
         _addShellLine(dir);
     });
 
@@ -158,20 +158,19 @@ define(function (require, exports, module) {
 
     }
 
-    function _addShellOutput(data, color) {
+    function _addShellOutput(data, className) {
 
         var currentCommandGroup = $(".hdy-current"),
             currentCommandResult = $(".hdy-command-result",
                                      currentCommandGroup);
 
-        if ($("pre", currentCommandResult).length === 0) {
-            currentCommandResult.append($("<pre>"));
+        var $pre = $("<pre></pre>");
+        if (className) {
+            $pre.addClass(className);
         }
 
-        if (color) {
-            $("pre", currentCommandResult).addClass('hdy-error');
-        }
-        $("pre", currentCommandResult).append(document.createTextNode(data));
+        $pre.append(document.createTextNode(data));
+        currentCommandResult.append($pre);
     }
 
     function _addShellLine(cwd) {

@@ -21,7 +21,9 @@
     */
     function _execute(cmd, cwd, isWin) {
 
-        var exec = require("child_process").exec,
+        var spawn = require('child_process').spawn,
+            splitarps = require('splitargs'),
+            args,
             enddir = cwd,
             tempdir,
             child;
@@ -51,18 +53,36 @@
 
         }
 
-        child = exec(cmd, { cwd: cwd });
+        args = splitarps(cmd);
+        if (args.length === 0) {
+            args = [];
+        }
+
+        if (isWin) {
+            cmd = 'cmd.exe';
+            args.unshift('/c');
+        }
+        else {
+            cmd = 'sh';
+            args.unshift('-c');
+        }
+
+        child = spawn(cmd, args, { cwd: cwd, env: process.env });
 
         child.stdout.on("data", function (data) {
-            _domainManager.emitEvent("hdyShellDomain", "stdout", [data]);
+            _domainManager.emitEvent("hdyShellDomain", "stdout", [data.toString()]);
         });
 
         child.stderr.on("data", function (data) {
-            _domainManager.emitEvent("hdyShellDomain", "stderr", [data]);
+            _domainManager.emitEvent("hdyShellDomain", "stderr", [data.toString()]);
         });
 
         child.on("close", function () {
-            _domainManager.emitEvent("hdyShellDomain", "exit", [enddir]);
+            _domainManager.emitEvent("hdyShellDomain", "close", [enddir]);
+        });
+
+        child.on("exit", function () {
+            //_domainManager.emitEvent("hdyShellDomain", "close", [enddir]);
         });
 
     }
@@ -81,7 +101,7 @@
             "hdyShellDomain", // domain name
             "execute", // command name
             _execute, // command handler function
-            false, // isAsync
+            true, // isAsync
             "Execute the given command and return the results to the UI",
             [{
                 name: "cmd",
@@ -109,11 +129,8 @@
                                     [{name: "err", type: "string"}]);
 
         domainManager.registerEvent("hdyShellDomain",
-                                    "exit",
+                                    "close",
                                     [{name: "enddir", type: "string"}]);
-
-        domainManager.registerEvent("hdyShellDomain",
-                                    "clear");
 
         _domainManager = domainManager;
     }
