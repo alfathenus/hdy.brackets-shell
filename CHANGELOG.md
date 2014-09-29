@@ -1,5 +1,11 @@
 ## Change Log
 
+### v0.0.5
+* BUG: Resolved issue with long running processes by moving from child_process
+exec to spawn.  This gives a much better async experience to user.
+* FEATURE: Added kill process button. This will kill the current long running
+process that was initiated via the shell.
+
 ### v0.0.4
 * BUG: Resolved issue when attempting to browse to directory which doesn't
 nothing would happen. This now returns an error for display

@@ -10,7 +10,8 @@
 (function() {
     "use strict";
 
-    var _domainManager;
+    var _domainManager,
+        child;
 
     /**
     * @private
@@ -25,8 +26,7 @@
             splitarps = require('splitargs'),
             args,
             enddir = cwd,
-            tempdir,
-            child;
+            tempdir;
 
         cmd = cmd.trim();
 
@@ -87,6 +87,13 @@
 
     }
 
+    function _kill() {
+
+        if (child != null) {
+            child.kill();
+        }
+    }
+
     /**
     * Initializes the test domain with several test commands.
     * @param {DomainManager} domainManager The DomainManager for the server
@@ -96,6 +103,15 @@
         if (!domainManager.hasDomain("hdyShellDomain")) {
             domainManager.registerDomain("hdyShellDomain", {major: 0, minor: 1});
         }
+
+        domainManager.registerCommand(
+            "hdyShellDomain", // domain name
+            "kill", // command name
+            _kill, // command handler function
+            true, // isAsync
+            "Kill the current executing process",
+            []
+        );
 
         domainManager.registerCommand(
             "hdyShellDomain", // domain name

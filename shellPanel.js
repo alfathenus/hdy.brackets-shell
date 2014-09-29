@@ -32,6 +32,11 @@ define(function (require, exports, module) {
         CommandRollIndex    = -1;
 
 
+    function _kill() {
+        ShellDomain.exec('kill');
+        _addShellLine(_getCommandPrompt());
+    }
+
     function _toggle() {
         if (ShellPanel.isVisible()) {
             _hide();
@@ -228,6 +233,7 @@ define(function (require, exports, module) {
         var cwd = _getCommandPrompt();
 
         $(".close", ShellPanel.$panel).click(_toggle);
+        $("#hdy-killprocess", ShellPanel.$panel).click(_kill);
         $(".hdy-command-groups .hdy-current .hdy-command")
             .attr("data-cwd", cwd);
 
